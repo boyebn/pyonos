@@ -32,7 +32,10 @@ class Player(object):
 
         loop = spotify.EventLoop(self.session)
         loop.start()
-        self.session.on(spotify.SessionEvent.END_OF_TRACK, self.play_next())
+        self.session.on(spotify.SessionEvent.END_OF_TRACK, self.end_of_track)
+
+    def end_of_track(self, e):
+        self.play_next()
 
     def get_track(self, track_url):
         return self.session.get_track(track_url).load()
