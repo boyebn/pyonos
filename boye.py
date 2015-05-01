@@ -51,7 +51,7 @@ class Player(object):
         self.stop()
         if not self.queue.has_next():
             return
-        track = self.queue.get_next()['track']
+        track = self.queue.get_next()['track'].load()
         self.session.player.load(track)
         self.session.player.play()
 
