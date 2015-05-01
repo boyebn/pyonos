@@ -35,6 +35,9 @@ class Player(object):
     def get_track(self, track_url):
         return self.session.get_track(track_url).load()
 
+    def is_loaded(self):
+        return not self.session.player.state == spotify.PlayerState.UNLOADED
+
     def stop(self):
         self.session.player.unload()
 
@@ -176,8 +179,11 @@ class Spotify(object):
     def __init__(self):
         config = spotify.Config()
         config.user_agent = 'Svanborg Spotify Client'
-        session = spotify.Session(config)
-        session.preferred_bitrate(1)  # 320 kib/s
+        self.session = spotify.Session(config)
+        self.session.preferred_bitrate(1)  # 320 kib/s
 
-        self.Queue = PlayQueue(session)
-        self.Player = Player(session, self.Queue)
+        self.Queue = PlayQueue(self.session)
+        self.Player = Player(self.session, self.Queue)
+
+    def get_playlist(self, uri):
+        return self.session.get_playlist(uri).load()
