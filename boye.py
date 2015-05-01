@@ -30,6 +30,8 @@ class Player(object):
         while not logged_in_event.wait(0.1):
             self.session.process_events()  # waits until the login is complete
 
+        loop = spotify.EventLoop(self.session)
+        loop.start()
         self.session.on(spotify.SessionEvent.END_OF_TRACK, self.play_next())
 
     def get_track(self, track_url):
@@ -51,7 +53,7 @@ class Player(object):
         self.stop()
         if not self.queue.has_next():
             return
-        track = self.queue.get_next()['track'].load()
+        track = self.queue.get_next()['track']
         self.session.player.load(track)
         self.session.player.play()
 
