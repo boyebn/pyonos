@@ -2,11 +2,9 @@
 
 __author__ = 'boye'
 
-from time import sleep
 import spotify
 import threading
 import settings
-import random
 
 
 class Player(object):
@@ -174,14 +172,12 @@ class PlayQueue(object):
         return [track['track'] for track in self.queue]
 
 
-config = spotify.Config()
-config.user_agent = 'Svanborg Spotify Client'
-session = spotify.Session(config)
-session.preferred_bitrate(1)  # 320 kib/s
-q = PlayQueue(session)
-sp = Player(session, q)
-URI = 'spotify:track:5gOd6zDC8vhlYjqbQdJVWP'
-q.add_queue(URI)
-sp.play_next()
-while q.has_next():
-    sleep(1)
+class Spotify(object):
+    def __init__(self):
+        config = spotify.Config()
+        config.user_agent = 'Svanborg Spotify Client'
+        session = spotify.Session(config)
+        session.preferred_bitrate(1)  # 320 kib/s
+
+        self.Queue = PlayQueue(session)
+        self.Player = Player(session, self.Queue)
