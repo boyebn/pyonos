@@ -11,17 +11,17 @@ app = Flask(__name__)
 def home():
     return render_template('home.html')
 
-@app.route('/playlist')
-@app.route('/playlist/<uri>')
-def playlist(uri='spotify:user:pumazz:playlist:2e3fd32clPYmADf809LrM6'):
-
-    playlist = spotify.get_playlist(uri)
-
-    if spotify.Queue.has_next():
-        current = spotify.Queue.get_current()['track'].name
-        return render_template('playlist.html', now_playing=current, playlist=playlist)
-
-    return render_template('playlist.html', playlist=playlist)
+#@app.route('/playlist')
+#@app.route('/playlist/<uri>')
+#def playlist(uri='spotify:user:pumazz:playlist:2e3fd32clPYmADf809LrM6'):
+#
+#    playlist = spotify.get_playlist(uri)
+#
+#    if spotify.Queue.has_next():
+#        current = spotify.Queue.get_current()['track'].name
+#        return render_template('playlist.html', now_playing=current, playlist=playlist)
+#
+#    return render_template('playlist.html', playlist=playlist)
 
 @app.route('/queue/<uri>')
 def add_queue(uri):
