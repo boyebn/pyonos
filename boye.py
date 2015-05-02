@@ -159,12 +159,13 @@ class PlayQueue(object):
             return False
 
     def remove_current(self):
-        """ Removes current song, returns next song if any, false otherwise """
+        """ Removes current song and returns True, false if there is no queue """
         if self.queue:
             self.queue.pop(self.position)
-            if self.queue:
-                self.queue_size -= 1
-                return self.queue[self.position]
+            self.queue_size -= 1
+            if self.position > self.queue_size - 1:
+                self.position = 0
+            return True
         return False
 
     def get_queue(self):
@@ -192,3 +193,12 @@ class Spotify(object):
 
     def get_playlist(self, uri):
         return self.session.get_playlist(uri).load()
+
+    def search(self, s):
+        return self.session.search(s, track_count=42, album_count=3, artist_count=3).load()
+
+    def get_album(self, uri):
+        return self.session.get_album(uri).load()
+
+    def get_tracks_of_album(self, album):
+        return album.browse().load().tracks
