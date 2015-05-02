@@ -55,7 +55,20 @@ def pause():
 
 @app.route('/view/queue')
 def view_queue():
-    tracks = spotify.Queue.get_queue_tracks()
+    tracks = list()
+
+    for track in spotify.Queue.get_queue_tracks():
+        track.load()
+        name = track.name
+        duration = '%d:%02d' % divmod(track.duration/1000, 60)
+        if len(name) > 35:
+            name = name[:30] + '...'
+        artist = ', '.join([artist.name for artist in track.artists])
+        if len(artist) > 35:
+            artist = artist[:30] + '...'
+        uri = track.link.uri
+
+        tracks.append({"name": name, "artist": artist, "uri": uri, "duration": duration})
 
     return render_template('queue.html', tracks=tracks)
 
@@ -101,9 +114,9 @@ def view_album(uri):
 
     artist = album.artist.name
 
-    image = album.cover_link().url
+    image = album.cover_link(2).url
 
-    return render_template('album.html', result=result, image=image, artist=artist, name=name, tracks=track_list)
+    return render_template('album.html', uri=uri, result=result, image=image, artist=artist, name=name, tracks=track_list)
 
 
 @app.route('/search')
@@ -166,6 +179,10 @@ def search():
 
     except KeyError:
         return redirect(url_for('home'))
+
+@app.route('/artist/<uri>')
+def view_artist(uri):
+    return render_template('artist.html')
 
 if __name__ == '__main__':
     spotify = Spotify()

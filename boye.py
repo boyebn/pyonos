@@ -192,13 +192,25 @@ class Spotify(object):
         self.Player = Player(self.session, self.Queue)
 
     def get_playlist(self, uri):
-        return self.session.get_playlist(uri).load()
+        try:
+            return self.session.get_playlist(uri).load(2)
+        except spotify.Timeout and AttributeError:
+            return list()
 
     def search(self, s):
-        return self.session.search(s, track_count=42, album_count=3, artist_count=3).load()
+        try:
+            return self.session.search(s, track_count=42, album_count=3, artist_count=3).load(2)
+        except spotify.Timeout and AttributeError:
+            return list()
 
     def get_album(self, uri):
-        return self.session.get_album(uri).load()
+        try:
+            return self.session.get_album(uri).load(2)
+        except spotify.Timeout and AttributeError:
+            return list()
 
     def get_tracks_of_album(self, album):
-        return album.browse().load().tracks
+        try:
+            return album.browse().load(2).tracks
+        except spotify.Timeout and AttributeError:
+            return list()
