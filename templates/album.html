@@ -14,10 +14,10 @@
                         <i class="fa fa-plus-circle fa-2x"></i>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="/album/queue/{{ uri }}">QUEUE</a></li>
-                        <li><a href="/album/next/{{ uri }}">PLAY NEXT</a></li>
-                        <li><a href="/album/now/{{ uri }}">PLAY NOW</a></li>
-                        <li><a href="/album/replace/{{ uri }}">REPLACE QUEUE</a></li>
+                        <li><a href="javascript:void(0)" onclick="silet_http_get('/album/queue/{{ uri }}');">QUEUE</a></li>
+                        <li><a href="javascript:void(0)" onclick="silet_http_get('/album/next/{{ uri }}');">PLAY NEXT</a></li>
+                        <li><a href="javascript:void(0)" onclick="silet_http_get('/album/now/{{ uri }}');">PLAY NOW</a></li>
+                        <li><a href="javascript:void(0)" onclick="silet_http_get('/album/replace/{{ uri }}');">REPLACE QUEUE</a></li>
                     </ul>
                 </div>
             </div>

@@ -13,7 +13,8 @@
                 <p>{{ track['name'] }}</p>
                 <p><small>{{ track['artist'] }}</small></p>
             </td>
-            <td align="right"><a href="javascript:void(0)" onclick="silet_http_get('/queue/remove/{{ track['uri'] }}');location.reload();"><i class="fa fa-trash fa-2x"></i></a></td>
+            <td align="right"><a href="javascript:void(0)" class="play-button"><i class="fa fa-play-circle-o fa-2x"></i></a></td>
+            <td align="right"><a href="javascript:void(0)" class="delete-button"><i class="fa fa-trash fa-2x"></i></a></td>
 
         </tr>
         {% endfor %}

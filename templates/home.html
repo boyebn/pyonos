@@ -12,19 +12,34 @@
             delay: 150,
             handle: "#test"
         });
+
+        $('tbody.queue tr').each(function(index){
+            var play_index = "silet_http_get('/play/index/" + index + "');";
+            var delete_index = "silet_http_get('/queue/remove/index/" + index + "');";
+
+            var play_click = new Function(play_index);
+            var delete_click = new Function(delete_index);
+
+            $(this).find( 'td:eq(2) a' ).attr('onclick', '').click(play_click);
+            $(this).find( 'td:eq(3) a' ).attr('onclick', '').click(delete_click);
+        });
     });
-    function currentSong() {
-         $.getJSON('/now_playing', function(data){
-                current_playing = data.index+1;
-                $( '.queue tr:not(tr:nth-child(' + current_playing + '))' ).css("background", "white");
-                $( '.queue tr:nth-child(' + current_playing + ')' ).css("background", "palegreen");
-            });
-    }
-    window.setInterval(function(){
-            currentSong()
-        }, 1000);
     $(function(){
-        currentSong();
+        if(typeof(EventSource) !== "undefined") {
+            var now_playing = new EventSource("/stream/now_playing");
+            var queue_changed = new EventSource("/stream/queue_changed");
+
+            now_playing.onmessage = function(event) {
+                playing = parseInt(event.data) + 1;
+                $( '.queue tr:not(tr:nth-child(' + playing + '))' ).css("background", "white");
+                $( '.queue tr:nth-child(' + playing + ')' ).css("background", "palegreen");
+            }
+            queue_changed.onmessage = function(event) {
+                location.reload();
+            }
+        } else {
+            alert('not supported browser');
+        }
     })
 {% endblock %}
 
