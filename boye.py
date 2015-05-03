@@ -5,7 +5,8 @@ __author__ = 'boye'
 import spotify
 import threading
 import settings
-
+from time import sleep
+from thread import start_new_thread
 
 class Player(object):
 
@@ -95,6 +96,11 @@ class Player(object):
         Lengde (ms): {3}
         '''.format(name, ', '.join(artists), album, length)
 
+    def play_position(self, index):
+        if 0 <= index <= self.queue.get_queue_size() - 1:
+            self.queue.change_current(index)
+            self.restart()
+
 
 class PlayQueue(object):
     def __init__(self, session):
@@ -104,6 +110,7 @@ class PlayQueue(object):
         self.queue = list()
         self.position = 0
         self.queue_size = 0
+        self.changeFlag = False
 
     def get_next(self):
         """ Returns next song in queue if any, false otherwise """
@@ -119,6 +126,9 @@ class PlayQueue(object):
         if self.queue:
             return self.queue[self.position]
         return False
+
+    def get_queue_size(self):
+        return self.queue_size
 
     def get_previous(self):
         if self.queue:
@@ -138,15 +148,29 @@ class PlayQueue(object):
     def has_previous(self):
         return self.queue_size > 0
 
+    def set_change_fag(self):
+        def cf():
+            self.changeFlag = True
+            sleep(.15)
+            self.changeFlag = False
+
+        start_new_thread(cf, ())
+
+    def change_current(self, pos):
+        if 0 <= pos <= self.queue_size - 1:
+            self.position = pos
+
     def add_queue(self, track_url):
         """ Queue a song, track_url on the form: spotify:track:<track_id> """
         self.queue_size += 1
         self.queue.append({'url': track_url, 'track': self.session.get_track(track_url).load()})
+        self.set_change_fag()
 
     def add_next(self, track_url):
         """ Add a song to be played immediately after current song """
         self.queue_size += 1
         self.queue.insert(self.position + 1, {'url': track_url, 'track': self.session.get_track(track_url).load()})
+        self.set_change_fag()
 
     def remove(self, index):
         """ Removes song at the given index, returns True if successful, False otherwise """
@@ -157,11 +181,13 @@ class PlayQueue(object):
         if index > self.position:
             self.queue.pop(index)
             self.queue_size -= 1
+            self.set_change_fag()
             return True
         elif index < self.position:
             self.position -= 1
             self.queue.pop(index)
             self.queue_size -= 1
+            self.set_change_fag()
             return True
         else:
             return False
@@ -173,15 +199,21 @@ class PlayQueue(object):
             self.queue_size -= 1
             if self.position > self.queue_size - 1:
                 self.position = 0
+            self.set_change_fag()
             return True
         return False
+
+    def remove_all(self):
+        self.queue = list()
+        self.position = 0
+        self.queue_size = 0
 
     def move(self, from_index, to_index):
         if self.queue_size - 1 >= to_index and from_index >= 0 and self.queue_size > 0 and not from_index == to_index:
             current = self.queue[self.position]
             self.queue.insert(to_index, self.queue.pop(from_index))
             self.position = self.queue.index(current)
-
+            self.set_change_fag()
 
     def get_queue(self):
         """ Returns the current queue """
@@ -194,6 +226,9 @@ class PlayQueue(object):
     def get_queue_tracks(self):
         """ Returns a list containing the track-objects of the tracks in the queue """
         return [track['track'] for track in self.queue]
+
+    def is_changed(self):
+        return self.changeFlag
 
 
 class Spotify(object):
