@@ -43,6 +43,11 @@ class Player(object):
     def is_loaded(self):
         return not self.session.player.state == spotify.PlayerState.UNLOADED
 
+    def is_playing(self):
+        if self.session.player.state == spotify.PlayerState.PLAYING:
+            return 1
+        return 0
+
     def stop(self):
         self.session.player.unload()
 
@@ -124,6 +129,9 @@ class PlayQueue(object):
 
         return False
 
+    def get_position(self):
+        return self.position
+
     def has_next(self):
         return self.queue_size > 0
 
@@ -167,6 +175,13 @@ class PlayQueue(object):
                 self.position = 0
             return True
         return False
+
+    def move(self, from_index, to_index):
+        if self.queue_size - 1 >= to_index and from_index >= 0 and self.queue_size > 0 and not from_index == to_index:
+            current = self.queue[self.position]
+            self.queue.insert(to_index, self.queue.pop(from_index))
+            self.position = self.queue.index(current)
+
 
     def get_queue(self):
         """ Returns the current queue """
@@ -214,3 +229,10 @@ class Spotify(object):
             return album.browse().load(2).tracks
         except spotify.Timeout and AttributeError:
             return list()
+
+    def get_user(self, uri):
+        try:
+            user = self.session.get_user(uri).load(2)
+        except spotify.Timeout:
+            return list()
+        return user

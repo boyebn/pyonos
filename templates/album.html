@@ -27,7 +27,15 @@
 
 {% block content %}
     {% if result %}
-        {% include "display_tracks.html" %}
+        <!-- For desktop/tablet users -->
+        <div class="hidden-xs">
+            {% include "display_tracks_desktop.html" %}
+        </div>
+        <!-- For mobile users -->
+        <div class="visible-xs">
+            <img src="{{ image }}" width="100%" class="img-responsive" alt="lok">
+            {% include "display_tracks_mobile.html" %}
+        </div>
     {% else %}
         <p>No album found</p>
     {% endif %}

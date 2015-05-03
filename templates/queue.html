@@ -1,24 +1,19 @@
 {% extends "base.html" %}
+
+{% block javascript %}
+    $(function() {
+        $( "#sortable" ).sortable();
+        $( "#sortable" ).disableSelection();
+    });
+{% endblock %}
+
 {% block header %}
     <h1>QUEUE</h1>
 {% endblock %}
 {% block content %}
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>Navn</th>
-                    <th>Artist</th>
-                    <th>Fjern</th>
-                </tr>
-            </thead>
-            {% for track in tracks %}
-            <tr>
-                <td>{{ track['name'] }}</td>
-                <td>{{ track['artist'] }}</td>
-                <td><a href="javascript:void(0)" onclick="silet_http_get('/queue/remove/{{ track['uri'] }}');location.reload();"><i class="fa fa-remove fa-2x"></i></a></td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
+    <ul class="list-group" id="sortable">
+    {% for track in tracks %}
+        <li class="list-group-item">{{ track['name'] }} - {{ track['artist'] }} | <a href="javascript:void(0)" onclick="silet_http_get('/queue/remove/{{ track['uri'] }}');location.reload();"><i class="fa fa-remove fa-2x"></i></a></li>
+    {% endfor %}
+    </ul>
 {% endblock %}

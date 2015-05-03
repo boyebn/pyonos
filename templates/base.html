@@ -15,73 +15,99 @@
             color: inherit;
             text-decoration: none;
         }
+        a:active {
+            color: inherit;
+            text-decoration: none;
+        }
+        a:visited {
+            color: inherit;
+            text-decoration: none;
+        }
+        body { padding-top: 70px; }
         {% block style %}{% endblock %}
     </style>
+    <!-- Javascript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.2/jquery.ui.touch-punch.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script>
+        function silet_http_get(url) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", url, false );
+            xmlHttp.send( null );
+            return true;
+        }
+        function http_get(url) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", url, false );
+            xmlHttp.send( null );
+            return xmlHttp.responseText;
+        }
+        function searchForm() {
+            var x = document.forms["search"]["query"].value;
+            if (x != null && x != "") {
+                x = "/search?s=" + x.replace(" ", "%20");
+                window.location.assign(x);
+            }
+            return false;
+        }
+        function changePlayPause() {
+            $.getJSON('/is_playing', function(data){
+                if (data.playing == 1) {
+                    $('#play-button').hide();
+                    $('#pause-button').show();
+                } else {
+                    $('#play-button').show();
+                    $('#pause-button').hide();
+                }
+            });
+        }
+        window.setInterval(function(){
+            //changePlayPause()
+        }, 1000);
+        $(function(){
+            //changePlayPause();
+        })
+        {% block javascript %}{% endblock %}
+    </script>
 </head>
 
 <body>
-<nav class="navbar navbar-default navbar-static-top">
-  <div class="container">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="/">PYONOS</a>
-    </div>
-    <div class="navbar-left">
-        <form class="navbar-form navbar-left" role="search" enctype="multipart/form-data" onsubmit="return searchForm();" method="post" id="search">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Søk" value="{{ search }}" id="query" name="query">
-                <div class="input-group-btn">
-                    <button style="max-height: 31px" type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                </div>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">PYONOS</a>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navcollapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
             </div>
-        </form>
+            <div class="navbar-right">
+                <form class="navbar-form navbar-left" role="search" enctype="multipart/form-data" onsubmit="return searchForm();" method="post" id="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Søk" value="{{ search }}" id="query" name="query">
+                        <div class="input-group-btn">
+                            <button style="max-height: 31px" type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="collapse navbar-collapse" id="navcollapse">
+                <ul class="nav navbar-nav nav-pills navbar-right">
+                    <li><a style="color: lightgray;" href="javascript:void(0)" onclick="silet_http_get('/previous');"><i class="fa fa-step-backward fa-2x"></i></a></li>
+                    <li><a style="color: lightgray;" href="javascript:void(0)" onclick="silet_http_get('/play');"><i class="fa fa-play fa-2x"></i></a></li>
+                    <li><a style="color: lightgray;" href="javascript:void(0)" onclick="silet_http_get('/pause');"><i class="fa fa-pause fa-2x"></i></a></li>
+                    <li><a style="color: lightgray;" href="javascript:void(0)" onclick="silet_http_get('/next');"><i class="fa fa-step-forward fa-2x"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="page-header">{% block header %}{% endblock %}</div>
+        {% block content %}{% endblock %}
     </div>
-
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav">
-        <!-- <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li> -->
-        <li><a href="/view/queue">Queue</a></li>
-        <li><a href="/search/user">Brukere</a></li>
-        </ul>
-       <ul class="nav navbar-nav navbar-right">
-           <li id="now_playing">{% if now_playing %}{{ now_playing }}{% endif %}</li>
-           <li><a href="/play"><i class="fa fa-play"></i></a></li>
-           <li><a href="/pause"><i class="fa fa-pause"></i></a></li>
-       </ul>
-    </div>
-  </div>
-</nav>
-<div class="container">
-    <div class="page-header">{% block header %}{% endblock %}</div>
-    {% block content %}{% endblock %}
-</div>
-
-<!-- Javascript -->
-<script>
-    {% block javascript %}{% endblock %}
-    function silet_http_get(url) {
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open( "GET", url, false );
-        xmlHttp.send( null );
-        return true;
-    }
-    function searchForm() {
-        var x = document.forms["search"]["query"].value;
-        if (x != null && x != "") {
-            x = "/search?s=" + x.replace(" ", "%20");
-            window.location.assign(x);
-        }
-        return false;
-    }
-</script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 </body>
 </html>

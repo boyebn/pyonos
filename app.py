@@ -3,13 +3,38 @@ import datetime
 __author__ = 'boye'
 
 from boye import Spotify
+import json
 from flask import Flask, url_for, redirect, render_template, request
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    users = [
+        {'uri': 'spotify:user:lars_93', 'name': 'Lars'},
+        {'uri': 'spotify:user:pumazz', 'name': 'Boye'},
+        {'uri': 'spotify:user:magnode', 'name': 'Magnus'},
+        {'uri': 'spotify:user:audun0104', 'name': "Audun"},
+        {'uri': 'spotify:user:karlj0805', 'name': "Karl"},
+        {'uri': 'spotify:user:1140694396', 'name': "Markus"}
+    ]
+
+    tracks = list()
+
+    for track in spotify.Queue.get_queue_tracks():
+        track.load()
+        name = track.name
+        duration = '%d:%02d' % divmod(track.duration/1000, 60)
+        if len(name) > 35:
+            name = name[:30] + '...'
+        artist = ', '.join([artist.name for artist in track.artists])
+        if len(artist) > 35:
+            artist = artist[:30] + '...'
+        uri = track.link.uri
+
+        tracks.append({"name": name, "artist": artist, "uri": uri, "duration": duration})
+
+    return render_template('home.html', users=users, tracks=tracks)
 
 #@app.route('/playlist')
 #@app.route('/playlist/<uri>')
@@ -26,18 +51,18 @@ def home():
 @app.route('/queue/<uri>')
 def add_queue(uri):
     spotify.Queue.add_queue(uri)
-    return redirect(url_for('home'))
+    return ''
 
 @app.route('/next/<uri>')
 def add_next(uri):
     spotify.Queue.add_next(uri)
-    return redirect(url_for('home'))
+    return ''
 
 @app.route('/now/<uri>')
 def play_now(uri):
     spotify.Queue.add_next(uri)
     spotify.Player.play_next()
-    return redirect(url_for('home'))
+    return ''
 
 @app.route('/play')
 def play():
@@ -45,13 +70,13 @@ def play():
         spotify.Player.restart()
     else:
         spotify.Player.play()
-    return redirect(url_for('home'))
+    return ''
 
 @app.route('/pause')
 def pause():
     if spotify.Player.is_loaded():
         spotify.Player.pause()
-    return redirect(url_for('home'))
+    return ''
 
 @app.route('/view/queue')
 def view_queue():
@@ -77,17 +102,14 @@ def remove_track(uri):
     uris = spotify.Queue.get_queue_urls()
     if uri == spotify.Queue.get_current()['url']:
         spotify.Queue.remove_current()
-        spotify.Player.restart()
+        if spotify.Player.is_playing():
+            spotify.Player.restart()
     else:
         i = uris.index(uri)
         if i >= 0:
             spotify.Queue.remove(i)
 
-    return redirect(url_for('view_queue'))
-
-@app.route('/search/user')
-def user_search():
-    return render_template('users.html')
+    return ''
 
 @app.route('/album/<uri>')
 def view_album(uri):
@@ -183,6 +205,33 @@ def search():
 @app.route('/artist/<uri>')
 def view_artist(uri):
     return render_template('artist.html')
+
+@app.route('/is_playing')
+def is_playing():
+    return json.dumps({"playing": spotify.Player.is_playing()})
+
+@app.route('/now_playing')
+def now_playing():
+    return json.dumps({"index": spotify.Queue.get_position()})
+
+@app.route('/move/<int:index_from>/<int:index_to>')
+def move_track(index_from, index_to):
+    spotify.Queue.move(index_from, index_to)
+    return ''
+
+@app.route('/next')
+def play_next():
+    spotify.Player.play_next()
+    return ''
+
+@app.route('/previous')
+def play_previous():
+    spotify.Player.play_previous()
+    return ''
+
+@app.route('/user/<uri>')
+def view_user(uri):
+    return render_template('user.html')
 
 if __name__ == '__main__':
     spotify = Spotify()

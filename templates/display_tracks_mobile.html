@@ -1,0 +1,26 @@
+<div class="table-responsive">
+    <table class="table table-striped">
+        {% for track in tracks %}
+        <tr>
+            <td>
+                <div class="btn-group">
+                    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-plus fa-lg"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="javascript:void(0)" onclick="silet_http_get('/queue/{{ track['uri'] }}');">QUEUE</a></li>
+                        <li><a href="javascript:void(0)" onclick="silet_http_get('/next/{{ track['uri'] }}');">PLAY NEXT</a></li>
+                        <li><a href="javascript:void(0)" onclick="silet_http_get('/now/{{ track['uri'] }}');">PLAY NOW</a></li>
+                        <li><a href="javascript:void(0)" onclick="silet_http_get('/replace/{{ track['uri'] }}');">REPLACE QUEUE</a></li>
+                    </ul>
+                </div>
+            </td>
+            <td>
+                <p>{{ track['name'] }}</p>
+                <p><small>{{ track['artist'] }}</small></p>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr><td></td><td><br /><br /><br /><br /><br /><br /><br /><br /><br /></td></tr>
+    </table>
+</div>
