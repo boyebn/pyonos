@@ -265,9 +265,18 @@ class Spotify(object):
         except spotify.Timeout and AttributeError:
             return list()
 
+    def get_artist(self, uri):
+        artist = self.session.get_artist(uri).load(2)
+        browser = artist.browse().load(5)
+
+        try:
+            return artist.portrait_link(2).url, artist.name, browser
+        except AssertionError:
+            return "http://placehold.it/300x300", artist.name, browser
+
     def get_user(self, uri):
         try:
             user = self.session.get_user(uri).load(2)
         except spotify.Timeout:
-            return list()
+            return False
         return user

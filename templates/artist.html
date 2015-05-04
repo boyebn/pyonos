@@ -1,8 +1,46 @@
 {% extends "base.html" %}
+
+{% block javascript %}
+{% endblock %}
+
 {% block header %}
-    <h1>Artist</h1>
+    <div class="row">
+        <div class="col-sm-8 col-md-9 col-md-push-3 col-sm-push-4">
+            <h1>{{ name }}</h1>
+        </div>
+        <div class="col-sm-4 col-md-3 col-md-pull-9 col-sm-pull-8">
+            <img src="{{ image }}" width="100%" class="img-responsive" alt="lok">
+        </div>
+    </div>
 {% endblock %}
 
 {% block content %}
-<p>Kommer snart</p>
+    <!-- TOP TRACKS -->
+    <h3 style="text-align: center">TOP TRACKS</h3>
+    <!-- For desktop/tablet users -->
+    <div class="hidden-xs">
+        {% include "display_tracks_desktop.html" %}
+    </div>
+    <!-- For mobile users -->
+    <div class="visible-xs">
+        {% include "display_tracks_mobile.html" %}
+    </div>
+    <div class="scroll">
+        <h3 style="text-align: center">ALBUM</h3>
+        {% for i in range(albums|count) %}
+        {% if i % 6 == 0 %}<div class="row">{% endif %}
+        <div class="col-sm-4 col-md-2">
+            <div class="thumbnail">
+                <a href="/album/{{ albums[i]['uri'] }}">
+                <img class="img-responsive" width="100%" src="{{ albums[i]['image'] }}" alt="...">
+                <div style="text-align: center">
+                    <b><h4>{{ albums[i]['name'] }}</h4></b>
+                </div>
+                </a>
+            </div>
+        </div>
+        {% if i % 6 == 5 %}</div>{% endif %}
+        {% endfor %}
+        {% if (albums|count) % 6 != 0 %}</div>{% endif %}
+    </div>
 {% endblock %}

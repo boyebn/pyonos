@@ -49,22 +49,29 @@
 
 {% block content %}
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-4 col-md-push-8 rowspan">
             {% include "view_queue.html" %}
         </div>
-        <div class="col-md-4 table-responsive">
-            <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>Personer</th>
-                </tr>
-            </thead>
-            {% for user in users %}
-            <tr>
-                <td><a href="/user/{{ user['uri'] }}">{{ user['name'] }}</a></td>
-            </tr>
+        <div class="col-md-8 col-md-pull-4">
+            {% for playlist in playlists %}
+            <div class="col-md-6">
+                <div class="thumbnail">
+                    <a href="/playlist/{{ playlist['uri'] }}">
+                        <div style="margin-top: 1em" class="col-md-12">
+                            <img style="width: 50%;" src="{{ playlist['image'][0] }}" alt="..."><img style="width: 50%;" src="{{ playlist['image'][1] }}" alt="...">
+                        </div>
+                        <div style="margin-bottom: 1em" class="col-md-12">
+                            <img style="width: 50%;" src="{{ playlist['image'][2] }}" alt="..."><img style="width: 50%;" src="{{ playlist['image'][3] }}" alt="...">
+                        </div>
+                    </a>
+                    <div class="caption">
+                        <a href="/playlist/{{ playlist['uri'] }}"><h3>{{ playlist['name'] }}</h3></a>
+                        <i><p>Av {{ playlist['owner'] }}</p></i>
+                        <p><a href="javascript:void(0)" class="btn btn-default" onclick="silet_http_get('/playlist/queue/{{ playlist['uri'] }}');" role="button">ADD TO QUEUE</a> <a href="javascript:void(0)" class="btn btn-default" onclick="silet_http_get('/playlist/replace/{{ playlist['uri'] }}');" role="button">REPLACE QUEUE</a></p>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
-            </table>
         </div>
     </div>
 {% endblock %}

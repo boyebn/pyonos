@@ -31,6 +31,7 @@
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.2/jquery.ui.touch-punch.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="/include/jquery.lazyload.js" type="text/javascript"></script>
     <script>
         function silet_http_get(url) {
             var xmlHttp = new XMLHttpRequest();
@@ -52,23 +53,6 @@
             }
             return false;
         }
-        function changePlayPause() {
-            $.getJSON('/is_playing', function(data){
-                if (data.playing == 1) {
-                    $('#play-button').hide();
-                    $('#pause-button').show();
-                } else {
-                    $('#play-button').show();
-                    $('#pause-button').hide();
-                }
-            });
-        }
-        window.setInterval(function(){
-            //changePlayPause()
-        }, 1000);
-        $(function(){
-            //changePlayPause();
-        })
         {% block javascript %}{% endblock %}
     </script>
 </head>
