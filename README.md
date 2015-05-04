@@ -40,12 +40,12 @@ You also need an application developer key from spotify.
 Place the application key in root folder of pyonos (the same folder as app.py is in), and name it "spotify_appkey.key"
 
 ### Username and password
-You have to make a settings.py-file in the root foler of pyonos (the same folder as app.py is in) containing your spotify username and password. It should look like this:
+You have to make a settings.py-file in the root folder of pyonos (the same folder as app.py is in) containing your spotify username and password. It should look like this:
 ```Python
 SPOTIFY_USER = 'username'
 SPOTIFY_PASS = 'secret'
 ```
-If you usaly use facebook for logging in to spotify, and don't know your spotify username, you can find this by going to your porfile in the spotify desktop applicaton, clicking on the option-button (scircle with three dots in it, right next to your profile picture), and copy the spotify URI. It will look something like this: `spotify:user:username` or `spotify:user:0123456789`. The part after "spotify:user:" is your username. You can probably [request a (new) password](https://www.spotify.com/no/password-reset/) for that username if you don't know it.
+If you usaly use facebook for logging in to spotify, and don't know your spotify username, you can find this by going to your profile in the spotify desktop application, clicking on the option-button (scircle with three dots in it, right next to your profile picture), and copy the spotify URI. It will look something like this: `spotify:user:username` or `spotify:user:0123456789`. The part after "spotify:user:" is your username. You can probably [request a (new) password](https://www.spotify.com/no/password-reset/) for that username if you don't know it.
 
 
 ## Configure
@@ -58,7 +58,7 @@ app.run(debug=True, host='0.0.0.0', port=5001, threaded=True)
 ```
 
 ### Front page playlists
-The playlists displayed on the front page can be altered easly in __app.py__. Find the home-function, and add/remove playlist URIs in the list called "__pl__".
+The playlists displayed on the front page can be altered easily in __app.py__. Find the home-function, and add/remove playlist URIs in the list called "__pl__".
 ```Python
 @app.route('/')
 def home():
@@ -85,7 +85,7 @@ screen -S pyonos
 sudo python app.py
 ```
 And then detach from the screen with `ctrl+a+d`.
-To reatach: 
+To reattach: 
 ```ShellSession
 screen -r pyonos
 ```
@@ -94,3 +94,6 @@ To kill/stop/terminate pyonos:
 sudo fuser -n tcp -k <port>
 ```
 The port is 5001 if you have not changed it (see the [port configure section](#port)).
+
+## Use
+To access pyonos, visit the local ip of the host running the pyonos server, on the port specified in the [port configuration](#port), in your internet browser (IE is not well supported). E.g.: 192.168.1.18:5001
