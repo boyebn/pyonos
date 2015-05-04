@@ -5,9 +5,7 @@ __author__ = 'boye'
 
 from boye import Spotify
 from time import sleep
-import HTMLParser
 from flask import Flask, url_for, redirect, render_template, request, Response
-from gevent.wsgi import WSGIServer
 
 app = Flask(__name__)
 
@@ -20,7 +18,8 @@ def home():
         'spotify:user:pumazz:playlist:7dD8A6HTNUYW6kgs9yvh28',
         'spotify:user:lars_93:playlist:1cURhgTeJBdZFuurOcjFRg',
         'spotify:user:pumazz:playlist:2Qn3V38vhATTp1M7wzYG0p',
-        'spotify:user:pumazz:playlist:6wnTPemhthfpExS1W8jklx'
+        'spotify:user:pumazz:playlist:6wnTPemhthfpExS1W8jklx',
+        'spotify:user:magnode:playlist:5NLNeYg2ZMM8Zb1KR2mtBl'
     ]
 
     playlists = list()
