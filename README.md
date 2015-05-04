@@ -93,4 +93,4 @@ To kill/stop/terminate pyonos:
 ```ShellSession
 sudo fuser -n tcp -k <port>
 ```
-The port is 5001 if you have not changed it (see the [port configure section](#Port)).
+The port is 5001 if you have not changed it (see the [port configure section](#port)).
