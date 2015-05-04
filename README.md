@@ -1,5 +1,5 @@
 # pyonos
-pyonos is a remotely controllable spotifyclient that can be installed on any system with python support and an 
+_pyonos_ is a remotely controllable spotify client that can be installed on any system with python support and an 
 ALSA-compatible soundcard. It can be accessed locally via an internet browser by navigating to the host's (the system 
 running pyonos) local IP address with the proper port (e.g. 192.168.1.18:5001). From there you can play music in a 
 priority queue. The website is both desktop- and mobile-friendly.
